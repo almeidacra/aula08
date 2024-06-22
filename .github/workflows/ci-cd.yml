@@ -84,12 +84,12 @@ jobs:
         EC2_USER: ${{ secrets.EC2_USER }}
         EC2_HOST: ${{ secrets.EC2_HOST }}
       run: |
-        echo "$SSH_KEY" > key.pem
+        echo "${{ secrets.SSH_KEY }}" > key.pem
         chmod 700 key.pem
-        scp -i key.pem -r ./* $EC2_USER@$EC2_HOST:/home/$EC2_USER/my-flask-app
-        ssh -i key.pem $EC2_USER@$EC2_HOST << 'EOF'
+        scp -i key.pem -r ./*  ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/ ${{ secrets.EC2_USER }}/my-flask-app
+        ssh -i key.pem  ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
           sudo systemctl stop my-flask-app
-          cd /home/$EC2_USER/my-flask-app
+          cd /home/ ${{ secrets.EC2_USER }}/my-flask-app
           pip install -r requirements.txt
           nohup python app.py > app.log 2>&1 &
           sudo systemctl start my-flask-app
