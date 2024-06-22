@@ -88,11 +88,11 @@ jobs:
       run: |
         echo "${{ secrets.SSH_KEY }}" > key.pem
         chmod 700 key.pem
-        cat $SSH_KEY
+        echo $SSH_KEY
         echo ""
-        cat $EC2_USER
+        echo $EC2_USER
         echo ""
-        cat $EC2_USER
+        echo $EC2_USER
         echo ""
         scp -i key.pem -r ./* ec2-user@ec2-52-90-174-136.compute-1.amazonaws.com:/home/${{ secrets.EC2_USER }}/my-flask-app 
         ssh -i key.pem ec2-user@ec2-52-90-174-136.compute-1.amazonaws.com << 'EOF'
