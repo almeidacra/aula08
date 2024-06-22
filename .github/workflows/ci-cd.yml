@@ -44,6 +44,11 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+    - name: Create sonar-project.properties file
+      run: |
+        echo "sonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}" > sonar-project.properties
+        echo "sonar.organization=${{ secrets.SONAR_PROJECT_ORGANIZATION }}" >> sonar-project.properties
+      
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@master
       env:
