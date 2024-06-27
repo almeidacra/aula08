@@ -83,22 +83,18 @@ jobs:
         echo "$SSH_KEY" > ~/.ssh/key.pem
         chmod 600 ~/.ssh/key.pem
         ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
-        scp -i ~/.ssh/key.pem -r ./* $EC2_USER@$EC2_HOST:/home/'$EC2_USER'/my-flask-app
+        scp -i ~/.ssh/key.pem -r ./* $EC2_USER@$EC2_HOST:/home/$EC2_USER/my-flask-app
         ssh -i ~/.ssh/key.pem $EC2_USER@$EC2_HOST << 'EOF'
           set -e
-
           curl -O https://bootstrap.pypa.io/get-pip.py
           python3 get-pip.py
-
-          cd /home/'$EC2_USER'/my-flask-app
+          cd /home/ec2-user/my-flask-app
           sudo cp my-flask-app.service /etc/systemd/system/my-flask-app.service
           sudo chmod 755 /etc/systemd/system/my-flask-app.service
           sudo systemctl enable my-flask-app
           sudo systemctl stop my-flask-app
-
           pip install --upgrade pip
           pip install -r requirements.txt
-
           nohup python3 app.py > app.log 2>&1 &
           sudo systemctl start my-flask-app
         EOF
