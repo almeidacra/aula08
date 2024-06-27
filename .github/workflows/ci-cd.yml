@@ -85,8 +85,8 @@ jobs:
         ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
 
         # Criação do diretório no servidor remoto
-        ssh -i ~/.ssh/key.pem $EC2_USER@$EC2_HOST "mkdir -p /home/$EC2_USER/my-flask-app
-
+        ssh -i ~/.ssh/key.pem $EC2_USER@$EC2_HOST:/home/$EC2_USER/my-flask-app 
+        
         # Cópia dos arquivos para o servidor remoto
         scp -i ~/.ssh/key.pem -r ./* $EC2_USER@$EC2_HOST:/home/$EC2_USER/my-flask-app
 
