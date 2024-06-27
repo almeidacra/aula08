@@ -77,20 +77,29 @@ jobs:
         SSH_KEY: ${{ secrets.SSH_KEY }}
         EC2_USER: ${{ secrets.EC2_USER }}
         EC2_HOST: ${{ secrets.EC2_HOST }}
+        APP_PATH: /home/$EC2_USER/my-flask-app
        
       run: |
         mkdir -p ~/.ssh
+        echo "$SSH_KEY" > ~/.ssh/key.pem
+        chmod 600 ~/.ssh/key.pem
         ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
-        echo "$SSH_KEY" > key.pem
-        chmod 600 key.pem
-        scp -i key.pem -r ./* $EC2_USER@$EC2_HOST:$APP_PATH
-        ssh -i key.pem $EC2_USER@$EC2_HOST << 'EOF'
+
+        scp -i ~/.ssh/key.pem -r ./* $EC2_USER@$EC2_HOST:$APP_PATH
+
+        ssh -i ~/.ssh/key.pem $EC2_USER@$EC2_HOST << 'EOF'
+          set -e
+          if [ ! -d "$APP_PATH" ]; then
+            echo "Directory $APP_PATH does not exist"
+            exit 1
+          fi
+
           curl -O https://bootstrap.pypa.io/get-pip.py
           python3 get-pip.py
 
-          cd /home/ec2-user/my-flask-app
+          cd $APP_PATH
           sudo cp my-flask-app.service /etc/systemd/system/my-flask-app.service
-          sudo chmod 777 my-flask-app.service
+          sudo chmod 755 /etc/systemd/system/my-flask-app.service
           sudo systemctl enable my-flask-app
           sudo systemctl stop my-flask-app
 
