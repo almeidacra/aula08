@@ -86,24 +86,24 @@ jobs:
         ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
 
         # Criação do diretório no servidor remoto
-        ssh -i ~/.ssh/key.pem $EC2_USER@$EC2_HOST "mkdir -p $APP_PATH"
+        ssh -i ~/.ssh/key.pem $EC2_USER@$EC2_HOST "mkdir -p /home/$EC2_USER/my-flask-app
 
         # Cópia dos arquivos para o servidor remoto
-        scp -i ~/.ssh/key.pem -r ./* $EC2_USER@$EC2_HOST:$APP_PATH
+        scp -i ~/.ssh/key.pem -r ./* $EC2_USER@$EC2_HOST:/home/$EC2_USER/my-flask-app
 
         ssh -i ~/.ssh/key.pem $EC2_USER@$EC2_HOST << 'EOF'
           set -e
 
           # Verificação da existência do diretório
-          if [ ! -d "$APP_PATH" ]; then
-            echo "Directory $APP_PATH does not exist"
+          if [ ! -d "/home/$EC2_USER/my-flask-app" ]; then
+            echo "Directory /home/$EC2_USER/my-flask-app does not exist"
             exit 1
           fi
 
           curl -O https://bootstrap.pypa.io/get-pip.py
           python3 get-pip.py
 
-          cd $APP_PATH
+          cd /home/$EC2_USER/my-flask-app
           sudo cp my-flask-app.service /etc/systemd/system/my-flask-app.service
           sudo chmod 755 /etc/systemd/system/my-flask-app.service
           sudo systemctl enable my-flask-app
