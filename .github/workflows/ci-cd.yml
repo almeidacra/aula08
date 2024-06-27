@@ -83,12 +83,12 @@ jobs:
         ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
         echo "$SSH_KEY" > key.pem
         chmod 600 key.pem
-        scp -i key.pem -r ./* $EC2_USER@$EC2_HOST:/home/$EC2_USER/my-flask-app
+        scp -i key.pem -r ./* $EC2_USER@$EC2_HOST:$APP_PATH
         ssh -i key.pem $EC2_USER@$EC2_HOST << 'EOF'
           curl -O https://bootstrap.pypa.io/get-pip.py
           python3 get-pip.py
 
-          cd /home/${{ secrets.EC2_USER }}/my-flask-app
+          cd $APP_PATH
           sudo cp my-flask-app.service /etc/systemd/system/my-flask-app.service
           sudo chmod 777 my-flask-app.service
           sudo systemctl enable my-flask-app
