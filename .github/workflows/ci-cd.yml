@@ -88,7 +88,7 @@ jobs:
           set -e
           curl -O https://bootstrap.pypa.io/get-pip.py
           python3 get-pip.py
-          cd /home/$EC2_USER/my-flask-app
+          cd /home/${{ secrets.EC2_USER }}/my-flask-app
           sudo cp my-flask-app.service /etc/systemd/system/my-flask-app.service
           sudo chmod 755 /etc/systemd/system/my-flask-app.service
           sudo systemctl enable my-flask-app
