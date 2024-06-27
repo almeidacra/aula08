@@ -83,10 +83,7 @@ jobs:
         echo "$SSH_KEY" > ~/.ssh/key.pem
         chmod 600 ~/.ssh/key.pem
         ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
-
-        # Cópia dos arquivos para o servidor remoto
         scp -i ~/.ssh/key.pem -r ./* $EC2_USER@$EC2_HOST:/home/$EC2_USER/my-flask-app
-
         ssh -i ~/.ssh/key.pem $EC2_USER@$EC2_HOST << 'EOF'
           set -e
 
