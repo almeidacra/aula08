@@ -87,6 +87,7 @@ jobs:
           curl -O https://bootstrap.pypa.io/get-pip.py
           python3 get-pip.py
           cd /home/ec2-user/my-flask-app
+          chmod 700 my-flask-app.service
           cp my-flask-app.service /etc/systemd/system/my-flask-app.service
           sudo systemctl enable my-flask-app
           sudo systemctl stop my-flask-app
