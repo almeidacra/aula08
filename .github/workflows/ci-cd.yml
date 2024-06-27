@@ -72,7 +72,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Deploy to EC2
+        - name: Deploy to EC2
       env:
         SSH_KEY: ${{ secrets.SSH_KEY }}
         EC2_USER: ${{ secrets.EC2_USER }}
@@ -85,10 +85,16 @@ jobs:
         chmod 600 ~/.ssh/key.pem
         ssh-keyscan -H $EC2_HOST >> ~/.ssh/known_hosts
 
+        # Criação do diretório no servidor remoto
+        ssh -i ~/.ssh/key.pem $EC2_USER@$EC2_HOST "mkdir -p $APP_PATH"
+
+        # Cópia dos arquivos para o servidor remoto
         scp -i ~/.ssh/key.pem -r ./* $EC2_USER@$EC2_HOST:$APP_PATH
 
         ssh -i ~/.ssh/key.pem $EC2_USER@$EC2_HOST << 'EOF'
           set -e
+
+          # Verificação da existência do diretório
           if [ ! -d "$APP_PATH" ]; then
             echo "Directory $APP_PATH does not exist"
             exit 1
